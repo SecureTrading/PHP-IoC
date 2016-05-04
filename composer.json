@@ -5,7 +5,7 @@
   "license" : "MIT",
   "require" : {
     "php" : ">=5.3.0",
-    "securetrading/exception" : "0.0.1-beta"
+    "securetrading/exception" : "dev-master"
   },
   "autoload" : {
     "psr-4" : {
