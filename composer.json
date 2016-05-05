@@ -7,6 +7,9 @@
     "php" : ">=5.3.0",
     "securetrading/exception" : "dev-master"
   },
+  "require-dev" : {
+    "securetrading/unittest" : "dev-master"
+  },
   "autoload" : {
     "psr-4" : {
       "Securetrading\\Ioc\\" : "src/"
