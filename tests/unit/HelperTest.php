@@ -90,6 +90,47 @@ PACKAGE_DEFINITION_CONTENTS;
     $this->assertSame($iocMock, $returnValue);
   }
 
+  /**
+   * 
+   */
+  public function testAddVendorDirs() {
+    $this->_helper->addVendorDirs("dir1");
+    $this->assertEquals(array('dir1' => true), $this->_getPrivateProperty($this->_helper, '_vendorDirs'));
+
+    $this->_helper->addVendorDirs(array("dir2", "dir3"));
+    $this->assertEquals(array('dir1' => true, 'dir2' => true, 'dir3' => true), $this->_getPrivateProperty($this->_helper, '_vendorDirs'));
+
+    $returnValue = $this->_helper->addVendorDirs("dir5");
+    $this->assertSame($this->_helper, $returnValue);
+  }
+
+  /**
+   * 
+   */
+  public function testAddEtcDirs() {
+    $this->_helper->addEtcDirs("dir1");
+    $this->assertEquals(array('dir1' => true), $this->_getPrivateProperty($this->_helper, '_etcDirs'));
+
+    $this->_helper->addEtcDirs(array("dir2", "dir3"));
+    $this->assertEquals(array('dir1' => true, 'dir2' => true, 'dir3' => true), $this->_getPrivateProperty($this->_helper, '_etcDirs'));
+
+    $returnValue = $this->_helper->addEtcDirs("dir5");
+    $this->assertSame($this->_helper, $returnValue);
+  }
+
+  /**
+   * 
+   */
+  public function testAddDefinitionFiles() {
+    $this->_helper->addDefinitionFiles("file1");
+    $this->assertEquals(array('file1' => true), $this->_getPrivateProperty($this->_helper, '_definitionFiles'));
+
+    $this->_helper->addDefinitionFiles(array("file2", "file3"));
+    $this->assertEquals(array('file1' => true, 'file2' => true, 'file3' => true), $this->_getPrivateProperty($this->_helper, '_definitionFiles'));
+
+    $returnValue = $this->_helper->addDefinitionFiles("file5");
+    $this->assertSame($this->_helper, $returnValue);
+  }
 
   /**
    *
@@ -144,7 +185,9 @@ PACKAGE_DEFINITION_CONTENTS;
     ;
 
     $this->_helper->setIoc($iocMock);
-    $returnValue = $this->_helper->loadPackages(array('package_definition_1', 'package_definition_2'), $rootDirectory->getChild('outer')->url());
+
+    $this->_helper->addVendorDirs($rootDirectory->getChild('outer')->url());
+    $returnValue = $this->_helper->loadPackages(array('package_definition_1', 'package_definition_2'));
 
     $this->assertEquals(array('package_definition_1', 'package_definition_2'), $this->_helper->getLoadedPackageNames());
     $this->assertSame($this->_helper, $returnValue);
@@ -197,7 +240,8 @@ PACKAGE_DEFINITION_CONTENTS;
     ;
     $this->_helper->setIoc($iocMock);
 
-    $this->_helper->loadPackage('package_definition_1', $rootDirectory->getChild('outer')->url());
+    $this->_helper->addVendorDirs($rootDirectory->getChild('outer')->url());
+    $returnValue = $this->_helper->loadPackages(array('package_definition_1'));
 
     $this->assertEquals(array('package_definition_1'), $this->_helper->getLoadedPackageNames());
   }
@@ -229,8 +273,20 @@ PACKAGE_DEFINITION_CONTENTS;
       ),
     ));
     
+    $contents3 = $this->_getPackageFileContents(array(
+      'package_name_3' => array(),
+    ));
+
+    $contents4 = $this->_getPackageFileContents(array(
+      'package_name_4' => array(),
+    ));
+
     $rootDirectory = vfsStream::setup('rootTestDirectory', 0777, array(
-      'outer' => array(
+      'definition_file_that_will_be_loaded_explicitly' => $contents4,
+      'my_etc_dir' => array(
+        '3_packagename_ioc.php' => $contents3,
+      ),
+      'outer_vendor_dir' => array(
         'package_folder_1' => array(
           'etc' => 'This is a file but etc should be a folder',
         ),
@@ -272,15 +328,22 @@ PACKAGE_DEFINITION_CONTENTS;
       ),
     ));
 
-    $rootDirectory->getChild('outer')->getChild('package_folder_3')->getChild('etc')->getChild('4_packagename_ioc.php')->chmod(0000);
+    $rootDirectory->getChild('outer_vendor_dir')->getChild('package_folder_3')->getChild('etc')->getChild('4_packagename_ioc.php')->chmod(0000);
 
     $expectedLoadedDefinitionSetFiles = array(
-      'vfs://rootTestDirectory/outer/package_folder_3/etc/1_packagename_ioc.php',
-      'vfs://rootTestDirectory/outer/package_folder_3/etc/2_packagename_ioc.php',
+      'vfs://rootTestDirectory/outer_vendor_dir/package_folder_3/etc/1_packagename_ioc.php',
+      'vfs://rootTestDirectory/outer_vendor_dir/package_folder_3/etc/2_packagename_ioc.php',
+      'vfs://rootTestDirectory/my_etc_dir/3_packagename_ioc.php',
+      'vfs://rootTestDirectory/definition_file_that_will_be_loaded_explicitly',
     );
 
     $this->assertEquals(array(), $this->_helper->getPackageDefinitionFiles());
-    $this->_($this->_helper, '_findAndSortPackageDefinitions', $rootDirectory->getChild('outer')->url());
+
+    $this->_helper->addVendorDirs($rootDirectory->getChild('outer_vendor_dir')->url());
+    $this->_helper->addEtcDirs($rootDirectory->getChild('my_etc_dir')->url());
+    $this->_helper->addDefinitionFiles($rootDirectory->getChild('definition_file_that_will_be_loaded_explicitly')->url());
+    $this->_($this->_helper, '_findAndSortPackageDefinitions');
+    
     $this->assertEquals($expectedLoadedDefinitionSetFiles, $this->_helper->getPackageDefinitionFiles());
   }
 
@@ -515,7 +578,9 @@ PACKAGE_DEFINITION_CONTENTS;
     ;
     $this->_helper->setIoc($iocMock);
 
-    $this->_($this->_helper, '_findAndSortPackageDefinitions', $rootDirectory->getChild('outer')->url());
+    $this->_helper->addVendorDirs($rootDirectory->getChild('outer')->url());
+
+    $this->_($this->_helper, '_findAndSortPackageDefinitions');
     $this->_($this->_helper, '_readPackageDefinitions', $this->_helper->getPackageDefinitionFiles());
 
     $this->_($this->_helper, '_loadPackage', $packageName);

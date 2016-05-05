@@ -5,6 +5,12 @@ namespace Securetrading\Ioc;
 class Helper {
   protected $_ioc;
 
+  protected $_vendorDirs = array();
+
+  protected $_etcDirs = array();
+
+  protected $_definitionFiles = array();
+
   protected $_packageDefinitionFiles = array();
 
   protected $_packageDefinitions = array();
@@ -32,16 +38,47 @@ class Helper {
     return $this->_ioc;
   }
 
-  public function loadPackages(array $packageNames, $baseDir) {
+  public function addVendorDirs($vendorDirs) {
+    if (!is_array($vendorDirs)) {
+      $vendorDirs = array($vendorDirs);
+    }
+    foreach($vendorDirs as $vendorDir) {
+      $this->_vendorDirs[$vendorDir] = true;
+    }
+    return $this;
+  }
+
+  public function addEtcDirs($etcDirs) {
+    if (!is_array($etcDirs)) {
+      $etcDirs = array($etcDirs);
+    }
+    foreach($etcDirs as $etcDir) {
+      $this->_etcDirs[$etcDir] = true;
+    }
+    return $this;
+  }
+
+  public function addDefinitionFiles($definitionFiles) {
+    if (!is_array($definitionFiles)) {
+      $definitionFiles = array($definitionFiles);
+    }
+    foreach($definitionFiles as $definitionFile) {
+      $this->_definitionFiles[$definitionFile] = true;
+    }
+    return $this;
+  }
+
+  public function loadPackages(array $packageNames) {
     foreach($packageNames as $packageName) {
-      $this->loadPackage($packageName, $baseDir);
+ 
+      $this->loadPackage($packageName);
     }
     return $this;
   }
   
-  public function loadPackage($packageName, $baseDir) {
+  public function loadPackage($packageName) {
     if (!$this->_packageDefinitions) {
-      $this->_findAndSortPackageDefinitions($baseDir);
+      $this->_findAndSortPackageDefinitions();
       $this->_readPackageDefinitions($this->_packageDefinitionFiles);
     }
     $this->_loadPackage($packageName);
@@ -60,13 +97,24 @@ class Helper {
     return array_keys($this->_loadedPackageNames);
   }
 
-  protected function _findAndSortPackageDefinitions($baseDir) {
+  protected function _findAndSortPackageDefinitions() {
     $files = array();
-    foreach (scandir($baseDir) as $filename) { 
-      $packageDir = $baseDir . DIRECTORY_SEPARATOR . $filename;
-      $etcDir = $packageDir . DIRECTORY_SEPARATOR . 'etc';
 
-      if (in_array($filename, array('.', '..')) || !is_dir($packageDir) || !file_exists($etcDir) || !is_dir($etcDir)) {
+    foreach(array_keys($this->_vendorDirs) as $vendorDir) {
+      foreach (scandir($vendorDir) as $filename) { 
+	$packageDir = rtrim($vendorDir, '//') . DIRECTORY_SEPARATOR . $filename;
+
+	if (in_array($filename, array('.', '..')) || !is_dir($packageDir)) {
+	  continue;
+	}
+
+	$etcDir = $packageDir . DIRECTORY_SEPARATOR . 'etc';
+	$this->addEtcDirs($etcDir);
+      }
+    }
+    
+    foreach(array_keys($this->_etcDirs) as $etcDir) {
+      if (!file_exists($etcDir) || !is_dir($etcDir)) {
 	continue;
       }
 
@@ -79,10 +127,18 @@ class Helper {
 	}	
       }
     }
+
+    foreach(array_keys($this->_definitionFiles) as $definitionFile) {
+      if (is_file($definitionFile) && is_readable($definitionFile)) {
+	$files[] = $definitionFile;
+      }
+    }
     
-    asort($files);
+    uasort($files, function($a, $b) {
+      return strcmp(basename($a), basename($b));
+    });
     
-    $this->_packageDefinitionFiles = $files;
+    $this->_packageDefinitionFiles = array_values($files);
   }
 
   protected function _readPackageDefinitions(array $files) {
