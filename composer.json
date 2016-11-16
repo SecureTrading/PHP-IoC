@@ -1,6 +1,6 @@
 {
   "name" : "securetrading/ioc",
-  "version" : "0.0.1-beta",
+  "version" : "1.0.0",
   "description" : "Secure Trading's Inversion of Control (IoC) package.",
   "license" : "MIT",
   "require" : {
