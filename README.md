@@ -6,6 +6,20 @@ Provides an Inversion of Control class `\Securetrading\Ioc\Ioc`.  Instances of t
 
 It also provides a helper class `\Securetrading\Ioc\Helper` that applications can use to easily register alias mappings to an instance of `Securetrading\Ioc\Ioc` without the application code needing to explicitly call `Securetrading\Ioc\Ioc::get()`.
 
+## Release History
+
+| Version  | Changes                        |
+| -------- |---------------                 |
+| 2.0.0    | PHP 7.3 and 7.4 compatibility. |
+| 1.0.0    | Initial Release                |
+
+## PHP Version Compatibility
+
+| Version  | Changes                        |
+| -------- |---------------                 |
+| 2.0.0    | PHP 7.3 - PHP 7.4              |
+| 1.0.0    | PHP 5.3 - PHP 7.2              |
+
 ## \Securetrading\Ioc\Ioc - Usage
 
 Construct instances either like this:
