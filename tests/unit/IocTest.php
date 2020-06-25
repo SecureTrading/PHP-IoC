@@ -13,7 +13,10 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
     $methodName = 'myCallback';
     $called = $shouldBeFired ? $this->once() : $this->never();
 
-    $mock = $this->createMock('stdClass', array($methodName));
+    $mock = $this->getMockBuilder('\stdClass')
+          ->setMethods(array($methodName))
+          ->getMock();
+    
     $mock
       ->expects($called)
       ->method($methodName)
@@ -27,8 +30,10 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
     $methodName = 'myCallback';
     $called = $shouldBeFired ? $this->once() : $this->never();
 
-    $mock = $this->createMock('stdClass', array($methodName));
-    #$mock = $this->createMock(new class {}, array($methodName));
+    $mock = $this->getMockBuilder('\stdClass')
+          ->setMethods(array($methodName))
+          ->getMock();
+    
     $mock
       ->expects($called)
       ->method($methodName)
@@ -216,7 +221,10 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
    * 
    */
   public function testGet_UsingMethodCallback_ParamsAndReturnValueAreCorrect() {
-    $mock = $this->createMock('\stdClass', array('getNewObject'));
+    $mock = $this->getMockBuilder('\stdClass')
+          ->setMethods(array('getNewObject'))
+          ->getMock();
+
     $mock
       ->expects($this->once())
       ->method('getNewObject')
