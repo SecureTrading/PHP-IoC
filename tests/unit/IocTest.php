@@ -13,7 +13,7 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
     $methodName = 'myCallback';
     $called = $shouldBeFired ? $this->once() : $this->never();
 
-    $mock = $this->getMock('stdClass', array($methodName));
+    $mock = $this->createMock('stdClass', array($methodName));
     $mock
       ->expects($called)
       ->method($methodName)
@@ -27,7 +27,7 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
     $methodName = 'myCallback';
     $called = $shouldBeFired ? $this->once() : $this->never();
 
-    $mock = $this->getMock('stdClass', array($methodName));
+    $mock = $this->createMock('stdClass', array($methodName));
     $mock
       ->expects($called)
       ->method($methodName)
@@ -42,12 +42,12 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
     return array($mock, $methodName);
   }
 
-  public function setUp() {
+  public function setUp() : void {
     $this->_ioc = new \Securetrading\Ioc\Ioc();
     $this->_rootDir = vfsStream::setup('rootTestDirectory');
   }
 
-  public function tearDown() {
+  public function tearDown() : void {
     foreach($this->_rootDir->getChildren() as $child) {
       $this->_rootDir->removeChild($child->getName());
     }
@@ -203,7 +203,7 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
    * 
    */
   public function testGet_UsingMethodCallback_ParamsAndReturnValueAreCorrect() {
-    $mock = $this->getMock('\stdClass', array('getNewObject'));
+    $mock = $this->createMock('\stdClass', array('getNewObject'));
     $mock
       ->expects($this->once())
       ->method('getNewObject')
@@ -379,7 +379,7 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
    * 
    */
   public function testCreate() {
-    $mockedIoc = $this->getMock('\Securetrading\Ioc\Ioc', array('get'));
+    $mockedIoc = $this->createMock('\Securetrading\Ioc\Ioc', array('get'));
     $mockedIoc
       ->expects($this->once())
       ->method('get')

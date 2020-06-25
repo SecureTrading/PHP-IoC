@@ -33,7 +33,7 @@ PACKAGE_DEFINITION_CONTENTS;
     return $this->getMock('\Securetrading\Ioc\IocInterface');
   }
 
-  public function setUp() {
+  public function setUp() : void {
     $this->_helper = new \Securetrading\Ioc\Helper();
     $this->_rootDir = vfsStream::setup('rootTestDirectory');
   }
