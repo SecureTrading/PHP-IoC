@@ -28,6 +28,7 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
     $called = $shouldBeFired ? $this->once() : $this->never();
 
     $mock = $this->createMock('stdClass', array($methodName));
+    #$mock = $this->createMock(new class {}, array($methodName));
     $mock
       ->expects($called)
       ->method($methodName)
@@ -86,26 +87,32 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
   }
   
   /**
-   * @expectedException \Securetrading\Ioc\IocException
-   * @expectedExceptionCode \Securetrading\Ioc\IocException::CODE_INVALID_ALIAS
+   * 
    */
   public function testSet_ThrowsInvalidAlias() {
+    $this->expectException(\Securetrading\Ioc\IocException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\IocException::CODE_INVALID_ALIAS);
+    
     $this->_ioc->set(function() { }, 3);
   }
 
   /**
-   * @expectedException \Securetrading\Ioc\IocException
-   * @expectedExceptionCode \Securetrading\Ioc\IocException::CODE_INVALID_CLASS
+   * 
    */
   public function testSet_ThrowsInvalidClass() {
+    $this->expectException(\Securetrading\Ioc\IocException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\IocException::CODE_INVALID_CLASS);
+    
     $this->_ioc->set('myAlias', '\Class\That\Does\Not\Exist');
   }
 
   /**
-   * @expectedException \Securetrading\Ioc\IocException
-   * @expectedExceptionCode \Securetrading\Ioc\IocException::CODE_INVALID_TYPE
+   * 
    */
   public function testSet_ThrowsInvalidType() {
+    $this->expectException(\Securetrading\Ioc\IocException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\IocException::CODE_INVALID_TYPE);
+    
     $this->_ioc->set('myAlias', 3);
   }
 
@@ -119,10 +126,12 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
   }
   
   /**
-   * @expectedException \Securetrading\Ioc\IocException
-   * @expectedExceptionCode \Securetrading\Ioc\IocException::CODE_CIRCULAR_RESOLUTION
+   * 
    */
   public function testGet_OnCircularResolution_ThrowsException() {
+    $this->expectException(\Securetrading\Ioc\IocException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\IocException::CODE_CIRCULAR_RESOLUTION);
+    
     $this->_ioc->set('myAlias', function(\Securetrading\Ioc\IocInterface $ioc, $alias, $params) {
       return $ioc->get('myAlias');
     });
@@ -130,10 +139,12 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
   }
 
   /**
-   * @expectedException \Securetrading\Ioc\IocException
-   * @expectedExceptionCode \Securetrading\Ioc\IoCException::CODE_MISSING_ALIAS
+   * 
    */
   public function testGet_OnMissingAlias_ThrowsException() {
+    $this->expectException(\Securetrading\Ioc\IocException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\IocException::CODE_MISSING_ALIAS);
+    
     $this->_ioc->get('thisAliasDoesNotExist');
   }
 
@@ -168,10 +179,12 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
   }
 
   /**
-   * @expectedException \Securetrading\Ioc\IocException
-   * @expectedExceptionCode \Securetrading\Ioc\IoCException::CODE_TYPE_NOT_INSTANTIABLE
+   * 
    */
   public function testGet_FromStringType_TypeIsNotInstantiable() {
+    $this->expectException(\Securetrading\Ioc\IocException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\IocException::CODE_TYPE_NOT_INSTANTIABLE);
+    
     $this->_ioc->set('not_instantiable', '\NotInstantiable');
     $this->_ioc->get('not_instantiable');
   }
@@ -424,10 +437,12 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
   }
 
   /**
-   * @expectedException \Securetrading\Ioc\IocException
-   * @expectedExceptionCode \Securetrading\Ioc\IocException::CODE_OPTION_MISSING
+   * 
    */
   public function testGetOption_KeyDoesNotExist_ThrowsException() {
+    $this->expectException(\Securetrading\Ioc\IocException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\IocException::CODE_OPTION_MISSING);
+    
     $this->_ioc->getOption('key_that_does_not_exist');
   }
 
@@ -464,10 +479,12 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
   }
 
   /**
-   * @expectedException \Securetrading\Ioc\IocException
-   * @expectedExceptionCode \Securetrading\Ioc\IocException::CODE_PARAM_MISSING
+   * 
    */
   public function testGetParameter_UsingKeyThatDoesNotExist() {
+    $this->expectException(\Securetrading\Ioc\IocException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\IocException::CODE_PARAM_MISSING);
+    
     $this->_ioc->getParameter('key_that_has_not_been_set', array());
   }
 

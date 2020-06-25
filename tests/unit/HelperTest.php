@@ -30,7 +30,7 @@ PACKAGE_DEFINITION_CONTENTS;
   }
 
   protected function _getIocMock() {
-    return $this->getMock('\Securetrading\Ioc\IocInterface');
+    return $this->createMock('\Securetrading\Ioc\IocInterface');
   }
 
   public function setUp() : void {
@@ -58,7 +58,7 @@ PACKAGE_DEFINITION_CONTENTS;
    *
    */
   public function testInstance_WhenGivenIocInstance() {
-    $iocStub = $this->getMock('\Securetrading\Ioc\IocInterface');
+    $iocStub = $this->createMock('\Securetrading\Ioc\IocInterface');
     $iocHelper = \Securetrading\Ioc\Helper::instance($iocStub);
     $this->assertSame($iocStub, $iocHelper->getIoc());
   }
@@ -73,18 +73,20 @@ PACKAGE_DEFINITION_CONTENTS;
   }
 
   /**
-   * @expectedException \Securetrading\Ioc\HelperException
-   * @expectedExceptionCode \Securetrading\Ioc\HelperException::CODE_IOC_INSTANCE_NOT_SET
+   * 
    */
   public function testGetIoc_WhenNotSet() {
-    $this->_helper->getIoc();
+      $this->expectException(\Securetrading\Ioc\HelperException::class);
+      $this->expectExceptionCode(\Securetrading\Ioc\HelperException::CODE_IOC_INSTANCE_NOT_SET);
+      
+      $this->_helper->getIoc();
   }
 
   /**
    *
    */
   public function testGetIoc_WhenSet() {
-    $iocMock = $this->getMock('\Securetrading\Ioc\IocInterface');
+    $iocMock = $this->createMock('\Securetrading\Ioc\IocInterface');
     $this->_helper->setIoc($iocMock);
     $returnValue = $this->_helper->getIoc();
     $this->assertSame($iocMock, $returnValue);
@@ -173,7 +175,7 @@ PACKAGE_DEFINITION_CONTENTS;
       ),
     ));
 
-    $iocMock = $this->getMock('\Securetrading\Ioc\IocInterface');
+    $iocMock = $this->createMock('\Securetrading\Ioc\IocInterface');
     $iocMock
       ->expects($this->exactly(3))
       ->method('set')
@@ -228,7 +230,7 @@ PACKAGE_DEFINITION_CONTENTS;
 
     $packageName = 'package_definition_1';
 
-    $iocMock = $this->getMock('\Securetrading\Ioc\Ioc');
+    $iocMock = $this->createMock('\Securetrading\Ioc\Ioc');
     $iocMock
       ->expects($this->any())
       ->method('set')
@@ -434,10 +436,12 @@ PACKAGE_DEFINITION_CONTENTS;
   }
 
   /**
-   * @expectedException \Securetrading\Ioc\HelperException
-   * @expectedExceptionCode \Securetrading\Ioc\HelperException::CODE_PACKAGE_FILE_NOT_ARRAY
+   * 
    */
   public function test_readPackageDefinitions_FileDoesNotReturnAnArray() {
+    $this->expectException(\Securetrading\Ioc\HelperException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\HelperException::CODE_PACKAGE_FILE_NOT_ARRAY);
+      
     $contents1 = $this->_getPackageFileContents('string - this should be an array');
 
     $rootDirectory = vfsStream::setup('rootTestDirectory', 0777, array(
@@ -454,10 +458,12 @@ PACKAGE_DEFINITION_CONTENTS;
   }
 
   /**
-   * @expectedException \Securetrading\Ioc\HelperException
-   * @expectedExceptionCode \Securetrading\Ioc\HelperException::CODE_PACKAGE_FILE_BAD_DEFINITIONS
+   * 
    */
   public function test_readPackageDefinitions_DefinitionsIsNotAnArray() {
+    $this->expectException(\Securetrading\Ioc\HelperException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\HelperException::CODE_PACKAGE_FILE_BAD_DEFINITIONS);
+    
     $contents1 = $this->_getPackageFileContents(array(
       'package_definition_1' => array(
         'definitions' => 'this should be an array',
@@ -479,10 +485,12 @@ PACKAGE_DEFINITION_CONTENTS;
   }
 
   /**
-   * @expectedException \Securetrading\Ioc\HelperException
-   * @expectedExceptionCode \Securetrading\Ioc\HelperException::CODE_PACKAGE_FILE_BAD_DEPENDENCIES
+   * 
    */
   public function test_readPackageDefinitions_DependenciesIsNotAnArray() {
+    $this->expectException(\Securetrading\Ioc\HelperException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\HelperException::CODE_PACKAGE_FILE_BAD_DEPENDENCIES);
+    
     $contents1 = $this->_getPackageFileContents(array(
       'package_definition_1' => array(
 	'definitions' => array(),
@@ -504,10 +512,12 @@ PACKAGE_DEFINITION_CONTENTS;
   }
 
   /**
-   * @expectedException \Securetrading\Ioc\HelperException
-   * @expectedExceptionCode \Securetrading\Ioc\HelperException::CODE_PACKAGE_FILE_BAD_ONLOAD
+   * 
    */
   public function test_readPackageDefinitions_OnLoadIsNotCallable() {
+    $this->expectException(\Securetrading\Ioc\HelperException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\HelperException::CODE_PACKAGE_FILE_BAD_ONLOAD);
+    
     $contents1 = $this->_getPackageFileContents(array(
       'package_definition_1' => array(
         'onload' => 'should be a callable function',
@@ -566,7 +576,7 @@ PACKAGE_DEFINITION_CONTENTS;
 
     $packageName = 'package_definition_1';
 
-    $iocMock = $this->getMock('\Securetrading\Ioc\Ioc');
+    $iocMock = $this->createMock('\Securetrading\Ioc\Ioc');
     $iocMock
       ->expects($this->exactly(3))
       ->method('set')
@@ -589,10 +599,12 @@ PACKAGE_DEFINITION_CONTENTS;
   }
 
   /**
-   * @expectedException \Securetrading\Ioc\HelperException
-   * @expectedExceptionCode \Securetrading\Ioc\HelperException::CODE_PACKAGE_DEFINITION_NOT_FOUND
+   * 
    */
   public function test_loadPackage_WhenPackageDefinitionNotFound() {
+    $this->expectException(\Securetrading\Ioc\HelperException::class);
+    $this->expectExceptionCode(\Securetrading\Ioc\HelperException::CODE_PACKAGE_DEFINITION_NOT_FOUND);
+    
     $this->_($this->_helper, '_loadPackage', 'missing_package_name');
   }
 }
