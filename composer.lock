@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "44ff4841dd7f0fcc29985c5d692ae349",
+    "content-hash": "4106fe44c9b17e68f2a906eaa0536e4c",
     "packages": [
         {
             "name": "securetrading/exception",
@@ -1896,7 +1896,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.3.0"
+        "php": "^7.3"
     },
     "platform-dev": [],
     "plugin-api-version": "1.1.0"
