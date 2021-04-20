@@ -10,6 +10,7 @@ It also provides a helper class `\Securetrading\Ioc\Helper` that applications ca
 
 | Version  | Changes                        |
 | -------- |---------------                 |
+| 3.0.0    | PHP 8 compatibility.           |
 | 2.0.0    | PHP 7.3 and 7.4 compatibility. |
 | 1.0.0    | Initial Release                |
 

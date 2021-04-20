@@ -243,36 +243,36 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
    * 
    */
   public function testGet_UsingBeforeCallback_AttachedToEveryAlias_CallbackShouldBeRun() {
-    $this->_ioc->before('*', $this->_getBeforeCallbackMock('myalias', array('k' => 'v'), true));
+    $this->_ioc->before('*', $this->_getBeforeCallbackMock('myalias', ['p1', 'p2'], true));
     $this->_ioc->set('myalias', '\EmptyConstructor');
-    $this->_ioc->get('myalias', array('k' => 'v'));
+    $this->_ioc->get('myalias', ['p1', 'p2']);
   }
 
   /**
    * 
    */
   public function testGet_UsingBeforeCallback_AttachedToOneAlias_CallbackShouldBeRun() {
-    $this->_ioc->before('myalias', $this->_getBeforeCallbackMock('myalias', array('k' => 'v'), true));
+    $this->_ioc->before('myalias', $this->_getBeforeCallbackMock('myalias', ['p1', 'p2'], true));
     $this->_ioc->set('myalias', '\EmptyConstructor');
-    $this->_ioc->get('myalias', array('k' => 'v'));
+    $this->_ioc->get('myalias', ['p1', 'p2']);
   }
 
   /**
    * 
    */
   public function testGet_UsingBeforeCallback_AttachedToEveryAliasByDefault_CallbackShouldBeRun() {
-    $this->_ioc->before($this->_getBeforeCallbackMock('myalias', array('k' => 'v'), true));
+    $this->_ioc->before($this->_getBeforeCallbackMock('myalias', ['p1', 'p2'], true));
     $this->_ioc->set('myalias', '\EmptyConstructor');
-    $this->_ioc->get('myalias', array('k' => 'v'));
+    $this->_ioc->get('myalias', ['p1', 'p2']);
   }
 
   /**
    * 
    */
   public function testGet_UsingBeforeCallback_AttachedToADifferentAlias_CallbackShouldNotBeRun() {
-    $this->_ioc->before('anotheralias', $this->_getBeforeCallbackMock('myalias', array('k' => 'v'), false));
+    $this->_ioc->before('anotheralias', $this->_getBeforeCallbackMock('myalias', ['p1', 'p2'], false));
     $this->_ioc->set('myalias', '\EmptyConstructor');
-    $this->_ioc->get('myalias', array('k' => 'v'));
+    $this->_ioc->get('myalias', ['p1', 'p2']);
   }
 
   /**
@@ -321,36 +321,36 @@ class IocTest extends \Securetrading\Unittest\UnittestAbstract {
    * 
    */
   public function testGet_UsingAfterCallback_AttachedToEveryAlias_CallbackShouldBeRun() {
-    $this->_ioc->after('*', $this->_getAfterCallbackMock('\EmptyConstructor', 'myalias', array('k' => 'v'), true));
+    $this->_ioc->after('*', $this->_getAfterCallbackMock('\EmptyConstructor', 'myalias', ['p1', 'p2'], true));
     $this->_ioc->set('myalias', '\EmptyConstructor');
-    $this->_ioc->get('myalias', array('k' => 'v'));
+    $this->_ioc->get('myalias', ['p1', 'p2']);
   }
 
   /**
    * 
    */
   public function testGet_UsingAfterCallback_AttachedToOneAlias_CallbackShouldBeRun() {
-    $this->_ioc->after('myalias', $this->_getAfterCallbackMock('\EmptyConstructor', 'myalias', array('k' => 'v'), true));
+    $this->_ioc->after('myalias', $this->_getAfterCallbackMock('\EmptyConstructor', 'myalias', ['p1', 'p2'], true));
     $this->_ioc->set('myalias', '\EmptyConstructor');
-    $this->_ioc->get('myalias', array('k' => 'v'));
+    $this->_ioc->get('myalias', ['p1', 'p2']);
   }
 
   /**
    * 
    */
   public function testGet_UsingAfterCallback_AttachedToEveryAliasByDefault_CallbackShouldBeRun() {
-    $this->_ioc->after($this->_getAfterCallbackMock('\EmptyConstructor', 'myalias', array('k' => 'v'), true));
+    $this->_ioc->after($this->_getAfterCallbackMock('\EmptyConstructor', 'myalias', ['p1', 'p2'], true));
     $this->_ioc->set('myalias', '\EmptyConstructor');
-    $this->_ioc->get('myalias', array('k' => 'v'));
+    $this->_ioc->get('myalias', ['p1', 'p2']);
   }
 
   /**
    * 
    */
   public function testGet_UsingAfterCallback_AttachedToADifferentAlias_CallbackShouldNotBeRun() {
-    $this->_ioc->after('anotheralias', $this->_getAfterCallbackMock('\EmptyConstructor', 'myalias', array('k' => 'v'), false));
+    $this->_ioc->after('anotheralias', $this->_getAfterCallbackMock('\EmptyConstructor', 'myalias', ['p1', 'p2'], false));
     $this->_ioc->set('myalias', '\EmptyConstructor');
-    $this->_ioc->get('myalias', array('k' => 'v'));
+    $this->_ioc->get('myalias', ['p1', 'p2']);
   }
 
   /**
