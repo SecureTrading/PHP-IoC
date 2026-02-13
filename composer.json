@@ -1,14 +1,14 @@
 {
   "name" : "securetrading/ioc",
-  "version" : "3.0.0",
+  "version" : "3.0.1",
   "description" : "Secure Trading's Inversion of Control (IoC) package.",
   "license" : "MIT",
   "require" : {
-    "php" : "^8.0",
+    "php" : "^8.2",
     "securetrading/exception" : "^1.0"
   },
   "require-dev" : {
-    "securetrading/unittest" : "^3.0",
+    "securetrading/unittest" : "^4.0",
     "mikey179/vfsstream" : "^1.6"
   },
   "autoload" : {
