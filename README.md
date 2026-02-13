@@ -8,16 +8,18 @@ It also provides a helper class `\Securetrading\Ioc\Helper` that applications ca
 
 ## Release History
 
-| Version  | Changes                        |
-| -------- |---------------                 |
-| 3.0.0    | PHP 8 compatibility.           |
-| 2.0.0    | PHP 7.3 and 7.4 compatibility. |
-| 1.0.0    | Initial Release                |
+| Version  | Changes                                |
+| -------- |----------------------------------------|
+| 3.0.1    | PHP 8.2 compatibility + phpunit update |
+| 3.0.0    | PHP 8 compatibility.                   |
+| 2.0.0    | PHP 7.3 and 7.4 compatibility.         |
+| 1.0.0    | Initial Release                        |
 
 ## PHP Version Compatibility
 
 | Version  | Changes                        |
-| -------- |---------------                 |
+| -------- |--------------------------------|
+| 3.0.1    | PHP 8.2                        |
 | 2.0.0    | PHP 7.3 - PHP 7.4              |
 | 1.0.0    | PHP 5.3 - PHP 7.2              |
 
@@ -34,13 +36,13 @@ Or like this:
 Register an alias with `set()`:
 
     $ioc->set('anAlias', '\stdClass');
-    
+
 Create instances with `get()`:
 
     $ioc->set('anAlias', '\stdClass');
     $instance = $ioc->get('anAlias');
     var_dump(get_class($instance)); // "stdClass"
-    
+
 An optional array can be passed to `get()`.  The values in this array will be passed to the constructor of the constructed instance:
 
     class A {
@@ -48,7 +50,7 @@ An optional array can be passed to `get()`.  The values in this array will be pa
             echo "values are " . $a . " and " . $b . PHP_EOL; // Outputs "values are param1 and param2"
         }
     }
-    
+
     $ioc->set('anAlias', '\A');
     $instance = $ioc->get('anAlias', ['param1', 'param2']);
 
@@ -66,7 +68,7 @@ Check to see if an alias has been added with `has()`:
     var_dump( $ioc->has('anAlias') ); // false
     $ioc->set('anAlias', '\stdClass');
     var_dump( $ioc->has('anAlias') ); // true
-   
+
 `set()` accepts an alias and either a literal class name (as shown earlier) or a factory method.  This factory method will be called when `get()` is called with the alias.
 
     $ioc->set('anAlias', function(\Securetrading\Ioc\IocInterface $ioc, $alias, $params) {
@@ -78,12 +80,12 @@ Check to see if an alias has been added with `has()`:
 
     $instance = $ioc->get('anAlias', ['optionalAdditionalParam1', 'optionalAdditionalParam2']);
     var_dump(get_class($instance)); // stdClass
-      
+
 The `create()` method is an alias for `get()`:
 
     $ioc->get('anAlias');
     $ioc->create('anAlias'); // Same as above.
-    
+
 The `getSingleton()` method resolves an alias to a class instance: multiple calls to `getSingleton()` with an alias will always return the same instance.
 
     $ioc->set('anAlias', '\stdClass');
@@ -94,38 +96,38 @@ The `before()` method can be used to register a function that will be called bef
 
     $ioc->set('anAlias', '\stdClass');
     $ioc->set('anotherAlias', '\stdClass');
-    
+
     $ioc->before('anAlias', function($alias, array $params = array()) {
         echo "in before callback for alias '" . $alias . "'" . PHP_EOL;
     });
-    
+
     $ioc->get('anAlias'); // Will trigger the 'before' function
     $ioc->get('anotherAlias'); // Will not trigger the 'before' function.
-    
+
 The wildcard `*` can be used to register a before callback that will be triggered before each instance is constructed, regardless of the alias:
 
     $ioc->set('anAlias', '\stdClass');
     $ioc->set('anotherAlias', '\stdClass');
-    
+
     $ioc->before('*', function($alias, array $params = array()) {
         echo "in before callback for alias '" . $alias . "'" . PHP_EOL;
     });
-    
+
     $ioc->get('anAlias'); // Will trigger the 'before' function
     $ioc->get('anotherAlias'); // Will trigger the 'before' function.
-    
+
 An `after()` instance method can also be called.  This works just like the `before()` instance method and also accepts the wildcard `*`:
 
     $ioc->set('anAlias', '\stdClass');
     $ioc->set('anotherAlias', '\stdClass');
-    
+
     $ioc->after('*', function(\Securetrading\Ioc\IocInterface $ioc, $constructedInstance, $alias, array $params = array()) {
          echo "in after callback for alias '" . $alias . "'" . PHP_EOL;
     });
 
     $ioc->get('anAlias'); // Will trigger the 'after' function
     $ioc->get('anotherAlias'); // Will trigger the 'after' function.
-    
+
 Helper methods for managing config options are provided.  These may be useful in e.g. the factory methods given as the second parameter to `set()` or in the callbacks given to the `before()` and `after()` methods:
 
     $ioc->setOption('our_option', 'our_value');
@@ -141,7 +143,7 @@ Helper methods for checking the existence of parameters in an array and for retr
     var_dump( $ioc->getParameter('key', [], 'default_value') ); // 'default_value'
     var_dump( $ioc->getParameter('key', ['key' => 'value']) ); // 'value'
     $ioc->getParameter('key', []); // throws \Securetrading\Ioc\IocException with code CODE_PARAM_MISSING.
-    
+
 ## \Securetrading\Ioc\Helper - Usage
 
 Use of the `Helper` is optional.
@@ -169,11 +171,11 @@ The `Helper` firstly needs to find valid 'helper files'.  Helper files must be n
 `addEtcDirs()` is overloaded so it can also be passed an array of helper files:
 
     $helper->addEtcDirs(['/path/to/an/etc/dir/', '/path/to/another/etc/dir']);
-    
+
 `addVendorDirs()` is designed for use with a Composer-based application and should point to a `vendor` directory created by Composer.  The `Helper` will then look inside each vendor name and package name for an `etc` dir.  Each valid helper file from this `etc` dir will then be loaded.
 
     $helper->addVendorDir('/path/to/a/composer/based/application/vendor/'); // E.g. a valid helper file might be '/path/to/a/composer/based/application/vendor/vendorName/applicationName/etc/our_ioc.php'
-    
+
 `addVendorDirs()` - like `addEtcDirs()` - is overloaded so more than once vendor dir can be specified at a time:
 
     $helper->addVendorDir(['/path/to/a/composer/based/application/vendor/', '/path/to/another/composer/based/application/vendor/']);
@@ -202,11 +204,11 @@ Helper files look like this:
 A call to `loadPackage()` looks like this:
 
     $helper->loadPackage('packageName');
-    
+
 Multiple packages can also be loaded by calling `loadPackages()`:
 
     $helper->loadPackages(['packageName', 'anotherPackageName']);
-    
+
 After `loadPackage()` or `loadPackages()` have been called then the IoC container can be returned:
 
     $ioc = $helper->getIoc();
@@ -216,13 +218,13 @@ Other methods (mostly useful for debugging) have also been provided for examinin
     var_dump( $helper->getPackageDefinitionFiles() );
     var_dump( $helper->getPackageDefinitions() );
     var_dump( $helper->getLoadedPackageNames() );
-    
+
 For reference - typical usage of the `Helper` might look like this:
 
     $ioc = \Securetrading\Ioc\Helper::instance()
       ->addVendorDirs(__DIR__ . '/vendor'/)
       ->loadPackage('ourPackageName')
       ->getIoc();
-      
+
     $instance = $ioc->get('alias');  // Using the IoC container.  Note we did not need to explicitly register 'alias' with the container.
-    
+
