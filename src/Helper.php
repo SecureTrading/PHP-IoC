@@ -17,7 +17,7 @@ class Helper {
 
   protected $_loadedPackageNames = array();
 
-  public static function instance(IocInterface $ioc = null) {
+  public static function instance(?IocInterface $ioc = null) {
     if (!$ioc) {
       $ioc = Ioc::instance();
     }
@@ -70,12 +70,12 @@ class Helper {
 
   public function loadPackages(array $packageNames) {
     foreach($packageNames as $packageName) {
- 
+
       $this->loadPackage($packageName);
     }
     return $this;
   }
-  
+
   public function loadPackage($packageName) {
     if (!$this->_packageDefinitions) {
       $this->_findAndSortPackageDefinitions();
@@ -88,7 +88,7 @@ class Helper {
   public function getPackageDefinitionFiles() {
     return $this->_packageDefinitionFiles;
   }
-  
+
   public function getPackageDefinitions() {
     return $this->_packageDefinitions;
   }
@@ -101,7 +101,7 @@ class Helper {
     $files = array();
 
     foreach(array_keys($this->_vendorDirs) as $vendorDir) {
-      foreach (scandir($vendorDir) as $filename) { 
+      foreach (scandir($vendorDir) as $filename) {
 	$packageDir = rtrim($vendorDir, '//') . DIRECTORY_SEPARATOR . $filename;
 
 	if (in_array($filename, array('.', '..')) || !is_dir($packageDir)) {
@@ -112,19 +112,19 @@ class Helper {
 	$this->addEtcDirs($etcDir);
       }
     }
-    
+
     foreach(array_keys($this->_etcDirs) as $etcDir) {
       if (!file_exists($etcDir) || !is_dir($etcDir)) {
 	continue;
       }
 
       $etcDirContents = scandir($etcDir);
-      
+
       foreach($etcDirContents as $filename) {
 	$filepath = $etcDir . DIRECTORY_SEPARATOR . $filename;
 	if (is_file($filepath) && is_readable($filepath) && fnmatch("*_ioc.php", $filename)) {
 	  $files[] = $etcDir . DIRECTORY_SEPARATOR . $filename;
-	}	
+	}
       }
     }
 
@@ -133,22 +133,22 @@ class Helper {
 	$files[] = $definitionFile;
       }
     }
-    
+
     uasort($files, function($a, $b) {
       return strcmp(basename($a), basename($b));
     });
-    
+
     $this->_packageDefinitionFiles = array_values($files);
   }
 
   protected function _readPackageDefinitions(array $files) {
     foreach($files as $file) {
       $packageDefinitions = require $file;
-      
+
       if (!is_array($packageDefinitions)) {
 	throw new HelperException(sprintf('The package definitions file "%s" must return an array.', $file), HelperException::CODE_PACKAGE_FILE_NOT_ARRAY);
       }
-      
+
       foreach($packageDefinitions as $packageName => $packageDefinition) {
 	if (isset($packageDefinition['definitions']) && !is_array($packageDefinition['definitions'])) {
 	  throw new HelperException(sprintf('The definitions in package definition "%s" from "%s" must be an array".', $packageName, $file), HelperException::CODE_PACKAGE_FILE_BAD_DEFINITIONS);
@@ -175,7 +175,7 @@ class Helper {
     if (isset($this->_loadedPackageNames[$packageName])) {
       return;
     }
-    
+
     if (isset($this->_packageDefinitions[$packageName]['definitions'])) {
       foreach($this->_packageDefinitions[$packageName]['definitions'] as $key => $value) {
 	$this->getIoc()->set($key, $value);
