@@ -10,6 +10,7 @@ It also provides a helper class `\Securetrading\Ioc\Helper` that applications ca
 
 | Version  | Changes                                |
 | -------- |----------------------------------------|
+| 3.0.3    | PHP 8.2 compatibility revert           |
 | 3.0.2    | PHP 8.4 compatibility                  |
 | 3.0.1    | PHP 8.2 compatibility + phpunit update |
 | 3.0.0    | PHP 8 compatibility.                   |
@@ -20,6 +21,7 @@ It also provides a helper class `\Securetrading\Ioc\Helper` that applications ca
 
 | Version  | Changes                        |
 | -------- |--------------------------------|
+| 3.0.3    | PHP 8.2                        |
 | 3.0.2    | PHP 8.4                        |
 | 3.0.1    | PHP 8.2                        |
 | 2.0.0    | PHP 7.3 - PHP 7.4              |
